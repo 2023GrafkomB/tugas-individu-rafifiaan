@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#toggleButton {
+    position: absolute; 
+    display: block;
+    margin-top: 20px;
+    margin-left: 1270px;
+    padding: 10px;
+}
