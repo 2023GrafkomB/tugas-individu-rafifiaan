@@ -1,3 +1,8 @@
+const canvas = document.getElementById('canvas'); // Jika canvas telah didefinisikan di HTML
+const gl = canvas.getContext('webgl2'); // Inisialisasi WebGL context
+const stats = new Stats(); // Inisialisasi objek Stats
+let animationStarted = false;
+
 (function(){
 
   function createShader(gl, source, type) {
@@ -209,6 +214,33 @@ void main(void) {
   const stats = new Stats();
   document.body.appendChild(stats.dom);
 
+  const animationParameters = {
+    rotationAngleX: 0.0,
+    rotationAngleY: 0.0,
+    rotationAngleZ: 0.0,
+  };
+
+  const startAnimationButton = document.getElementById('startAnimationButton');
+  const stopAnimationButton = document.getElementById('stopAnimationButton');
+  let animationId = null; 
+
+  startAnimationButton.addEventListener('click', () => {
+    if (animationId === null) {
+      // Set animationStarted menjadi true dan mulai animasi
+      animationStarted = true;
+      animationId = requestAnimationFrame(render);
+    }
+  });
+
+  stopAnimationButton.addEventListener('click', () => {
+    if (animationId !== null) {
+      // Set animationStarted menjadi false dan hentikan animasi
+      animationStarted = false;
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+  });
+
   const parameters = {
     translation: { x: 0.0, y: 0.0, z: 0.0 },
     rotation: { x: 0.0, y: .0, z: 0.0 },
@@ -268,17 +300,29 @@ void main(void) {
   };
 
   const renderRaymarch = function(vpMatrix) {
+    animationParameters.rotationAngleX += 0.5; // Ubah sudut rotasi X
+    animationParameters.rotationAngleY += 0.5; // Ubah sudut rotasi Y
+    animationParameters.rotationAngleZ += 0.5; // Ubah sudut rotasi Z
     const DEGREE_TO_RADIAN = Math.PI / 180.0;
 
-    const rotMatrix = Matrix4.rotateXYZ(
-      DEGREE_TO_RADIAN * parameters.rotation.x,
-      DEGREE_TO_RADIAN * parameters.rotation.y,
-      DEGREE_TO_RADIAN * parameters.rotation.z
-    );
+  const rotMatrix = Matrix4.rotateXYZ(
+    DEGREE_TO_RADIAN * animationParameters.rotationAngleX,
+    DEGREE_TO_RADIAN * animationParameters.rotationAngleY,
+    DEGREE_TO_RADIAN * animationParameters.rotationAngleZ
+  );
+    
 
-    const modelMatrix = Matrix4.mul(rotMatrix, Matrix4.translate(parameters.translation.x, parameters.translation.y, parameters.translation.z));
-    const invModelMatrix = Matrix4.inverse(modelMatrix);
-    const mvpMatrix = Matrix4.mul(modelMatrix, vpMatrix);
+  const modelMatrix = Matrix4.mul(
+    rotMatrix,
+    Matrix4.translate(
+      parameters.translation.x,
+      parameters.translation.y,
+      parameters.translation.z
+    )
+  );
+
+  const invModelMatrix = Matrix4.inverse(modelMatrix);
+  const mvpMatrix = Matrix4.mul(modelMatrix, vpMatrix);
 
     gl.useProgram(raymarchProgram);
     gl.uniformMatrix4fv(raymarchUniforms['u_mvpMatrix'], false, mvpMatrix.elements);
@@ -294,8 +338,16 @@ void main(void) {
     Vector3.zero,
     new Vector3(0.0, 1.0, 0.0)
   ));
+
   const render = function() {
     stats.update();
+
+    if (animationStarted) {
+      // Hanya update parameter animasi jika animasi telah dimulai
+      animationParameters.rotationAngleX += 0.5;
+      animationParameters.rotationAngleY += 0.5;
+      animationParameters.rotationAngleZ += 0.5;
+    }
 
     const projectionMatrix = Matrix4.perspective(canvas.width / canvas.height, 60.0, 0.01, 1000.0);
     const vpMatrix = Matrix4.mul(viewMatrix, projectionMatrix);
@@ -306,8 +358,10 @@ void main(void) {
     renderSphere(vpMatrix);
     renderRaymarch(vpMatrix);
 
-    requestAnimationFrame(render);
+    // requestAnimationFrame(render);
+    if (animationStarted) {
+      animationId = requestAnimationFrame(render);
+    }  
   };
   render();
-
 }());
