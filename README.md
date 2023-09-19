@@ -1,5 +1,10 @@
 ## Creating 3D Object using WebGL
 
+**Usage Guide** : 
+- clone this repo to your local storage
+- delete the `Tugas 2` folder while running in the text editor
+- run the `index.html` file using a live server and `port 5500`
+
 **Object** : 2 Spheres (big & small)
 
 **Feature** : texture, translation, rotation, scale, animation (click)
