@@ -1,5 +1,10 @@
 ## Creating 3D Object using WebGL
 
+**Identity**
+| Name                              | Student ID |
+| ----------------------------------|------------|
+| Rafi Aliefian Putra Ramadhani     | 5025211234 | 
+
 **Usage Guide** : 
 - clone this repo to your local storage
 - run the `index.html` file using a live server and `port 5500`
