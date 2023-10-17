@@ -14,12 +14,17 @@
    - 2 Spheres (big & small)
 - Tugas 3 
    - Abstract shape 
+- Tugas 4
+   - Some Object 3D
+   - Human (Man) Loader Object
 
 **Feature** : 
 - Tugas 2
    - texture, translation, rotation, scale, animation (click)
 - Tugas 3
    - cubemaps, skyboxes, shadow, lighting
+- Tugas 4
+   - Lighting, Shadow, Material, Textures, Animation, etc.
 
 **Note** : 
 - Tugas 2 
